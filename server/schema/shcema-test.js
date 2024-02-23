@@ -62,3 +62,47 @@ const RootQuery = new GraphQLObjectType({
 module.exports = new GraphQLSchema({
   query: RootQuery,
 });
+
+const newBookType = new GRaphQLObjectType({
+  name: "Books",
+  fields: () => ({
+    name: { type: GraphQLString },
+    id: { type: GraphQLID },
+    genre: { type: GraphQLString },
+  }),
+});
+
+const newAuthorType = new GraphQLObjectType({
+  name: "New Authors",
+  fields: () => ({
+    name: { type: GraphQLString },
+    id: { type: GraphQLID },
+    age: { type: GraphQLInt },
+  }),
+});
+
+const newRootQuery = new GraphQLObjectType({
+  name: "New Root Query",
+  fields: {
+    book: {
+      type: newBookType,
+      args: { id: { type: GraphQLID } },
+      resolve: (parent, args) => {
+        return _.find(books, { id: args.id });
+      },
+    },
+    author: {
+      type: newAuthorType,
+      args: { id: { type: GraphQLID } },
+      resolve: (parent, args) => {
+        return _.find(authors, { id: args.id });
+      },
+    },
+  },
+});
+
+const NewSchema = new GraphQLSchema({
+  query: newRootQuery,
+});
+
+module.exports = NewSchema;
