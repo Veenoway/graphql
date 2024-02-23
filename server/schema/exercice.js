@@ -107,6 +107,12 @@ const RootQuery = new GraphQLObjectType({
         return _.find(assets, { name: args.name });
       },
     },
+    allAssets: {
+      type: new GraphQLList(AssetsType),
+      resolve(parent, args) {
+        return assets;
+      },
+    },
   },
 });
 
