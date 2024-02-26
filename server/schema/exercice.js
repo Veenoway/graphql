@@ -103,13 +103,13 @@ const RootQuery = new GraphQLObjectType({
     asset: {
       type: AssetsType,
       args: { name: { type: GraphQLString } },
-      resolve(parent, args) {
+      resolve(args) {
         return _.find(assets, { name: args.name });
       },
     },
     allAssets: {
       type: new GraphQLList(AssetsType),
-      resolve(parent, args) {
+      resolve() {
         return assets;
       },
     },
