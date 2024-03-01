@@ -104,7 +104,7 @@ const RootQuery = new GraphQLObjectType({
       type: AssetsType,
       args: { name: { type: GraphQLString } },
       resolve(args) {
-        return _.find(assets, { name: args.name });
+        // return _.find(assets, { name: args.name });
       },
     },
     allAssets: {
