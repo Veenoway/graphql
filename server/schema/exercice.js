@@ -96,9 +96,7 @@ const RootQuery = new GraphQLObjectType({
     blockchain: {
       type: BlockchainType,
       args: { id: { type: GraphQLID } },
-      resolve(parent, args) {
-        return _.find(blockchains, { id: args.id });
-      },
+      resolve(parent, args) {},
     },
     asset: {
       type: AssetsType,
