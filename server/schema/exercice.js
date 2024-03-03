@@ -70,11 +70,7 @@ const BlockchainType = new GraphQLObjectType({
     id: { type: GraphQLID },
     assets: {
       type: GraphQLList(AssetsType),
-      resolve(parent, args) {
-        return _.filter(assets, (asset) =>
-          asset.blockchain.includes(parent.name)
-        );
-      },
+      resolve(parent, args) {},
     },
   }),
 });
