@@ -1,6 +1,6 @@
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
-const schema = require("./schema/exercice");
+const schema = require("./schema/wallet-explorer/pairs");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
@@ -13,7 +13,7 @@ mongoose.connection.once("open", () => {
 });
 
 app.use(
-  "/graphql",
+  "/graphql/pairs",
   graphqlHTTP({
     schema,
     graphiql: true,
