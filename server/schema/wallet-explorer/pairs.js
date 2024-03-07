@@ -24,7 +24,7 @@ const TokenType = new GraphQLObjectType({
 });
 
 const MarketPairType = new GraphQLObjectType({
-  name: "market-pair",
+  name: "pairMarket",
   fields: () => ({
     address: { type: GraphQLString },
     blockchain: { type: GraphQLString },
@@ -40,7 +40,7 @@ const MarketPairType = new GraphQLObjectType({
 });
 
 const PairTradeType = new GraphQLObjectType({
-  name: "pair-trades",
+  name: "pairTrades",
   fields: () => ({
     blockchain: { type: GraphQLString },
     date: { type: GraphQLInt },
@@ -49,6 +49,25 @@ const PairTradeType = new GraphQLObjectType({
     token_amount_usd: { type: GraphQLFloat },
     token_price: { type: GraphQLFloat },
     token_price_vs: { type: GraphQLFloat },
+  }),
+});
+
+const MarketHistoryPointType = new GraphQLObjectType({
+  name: "MarketHistoryPoint",
+  fields: () => ({
+    timestamp: { type: GraphQLFloat },
+    value: { type: GraphQLFloat },
+  }),
+});
+
+const marketHistoryType = new GraphQLList(
+  new GraphQLList(MarketHistoryPointType)
+);
+
+const priceHistoryType = new GraphQLObjectType({
+  name: "marketHistory",
+  fields: () => ({
+    price_history: { type: marketHistoryType },
   }),
 });
 
@@ -81,6 +100,19 @@ const RootQuery = new GraphQLObjectType({
         blockchain: { type: GraphQLString },
         asset: { type: GraphQLString },
         amount: { type: GraphQLInt },
+      },
+      resolve(parent, args) {
+        console.log("args:", args, "parent:", parent);
+        return args.address;
+      },
+    },
+    marketHistory: {
+      type: priceHistoryType,
+      args: {
+        asset: { type: GraphQLString },
+        blockchain: { type: GraphQLString },
+        from: { type: GraphQLInt },
+        to: { type: GraphQLInt },
       },
       resolve(parent, args) {
         console.log("args:", args, "parent:", parent);
