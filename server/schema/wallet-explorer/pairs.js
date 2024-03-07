@@ -23,8 +23,8 @@ const TokenType = new GraphQLObjectType({
   }),
 });
 
-const PairType = new GraphQLObjectType({
-  name: "pair",
+const MarketPairType = new GraphQLObjectType({
+  name: "market-pair",
   fields: () => ({
     address: { type: GraphQLString },
     blockchain: { type: GraphQLString },
@@ -39,23 +39,48 @@ const PairType = new GraphQLObjectType({
   }),
 });
 
+const PairTradeType = new GraphQLObjectType({
+  name: "pair-trades",
+  fields: () => ({
+    blockchain: { type: GraphQLString },
+    date: { type: GraphQLInt },
+    hash: { type: GraphQLString },
+    token_amount: { type: GraphQLFloat },
+    token_amount_usd: { type: GraphQLFloat },
+    token_price: { type: GraphQLFloat },
+    token_price_vs: { type: GraphQLFloat },
+  }),
+});
+
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
     allPairs: {
-      type: new GraphQLList(PairType),
+      type: new GraphQLList(MarketPairType),
       resolve() {
         return "ALL PAIRS";
       },
     },
-
-    pair: {
-      type: PairType,
+    pairMarket: {
+      type: MarketPairType,
       args: {
         address: { type: GraphQLString },
         blockchain: { type: GraphQLString },
         asset: { type: GraphQLString },
         stats: { type: GraphQLBoolean },
+      },
+      resolve(parent, args) {
+        console.log("args:", args, "parent:", parent);
+        return args.address;
+      },
+    },
+    pairTrades: {
+      type: new GraphQLList(PairTradeType),
+      args: {
+        address: { type: GraphQLString },
+        blockchain: { type: GraphQLString },
+        asset: { type: GraphQLString },
+        amount: { type: GraphQLInt },
       },
       resolve(parent, args) {
         console.log("args:", args, "parent:", parent);
