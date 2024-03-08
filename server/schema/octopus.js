@@ -6,8 +6,8 @@ const {
   GraphQLFloat,
   GraphQLBoolean,
   GraphQLList,
-  GraphQLSchema,
 } = require("graphql");
+const { HistoryPointType, ContractsType } = require("./commun");
 
 const PairTokenType = new GraphQLObjectType({
   name: "pairToken",
@@ -95,44 +95,7 @@ const PairTradeType = new GraphQLObjectType({
   }),
 });
 
-const AssetType = new GraphQLObjectType({
-  name: "asset",
-  fields: () => ({
-    marketCap: { type: GraphQLFloat },
-    marketCapDiluted: { type: GraphQLFloat },
-    liquidity: { type: GraphQLFloat },
-    price: { type: GraphQLFloat },
-    offChainVolume: { type: GraphQLFloat },
-    volume: { type: GraphQLFloat },
-    volumeChange24h: { type: GraphQLFloat },
-    volumeChange7d: { type: GraphQLFloat },
-    isListed: { type: GraphQLBoolean },
-    priceChange24h: { type: GraphQLFloat },
-    priceChange1h: { type: GraphQLFloat },
-    priceChange7d: { type: GraphQLFloat },
-    priceChange1m: { type: GraphQLFloat },
-    priceChange1y: { type: GraphQLFloat },
-    ath: { type: GraphQLFloat },
-    atl: { type: GraphQLFloat },
-    rank: { type: GraphQLInt },
-    logo: { type: GraphQLString },
-    name: { type: GraphQLString },
-    symbol: { type: GraphQLString },
-    contracts: { type: new GraphQLList(ContractsType) },
-  }),
-});
-
-const MarketHistoryPointType = new GraphQLObjectType({
-  name: "MarketHistoryPoint",
-  fields: () => ({
-    timestamp: { type: GraphQLFloat },
-    value: { type: GraphQLFloat },
-  }),
-});
-
-const marketHistoryType = new GraphQLList(
-  new GraphQLList(MarketHistoryPointType)
-);
+const marketHistoryType = new GraphQLList(new GraphQLList(HistoryPointType));
 
 const priceHistoryType = new GraphQLObjectType({
   name: "marketHistory",
@@ -150,16 +113,6 @@ const pairHistoryType = new GraphQLObjectType({
     open: { type: GraphQLFloat },
     time: { type: GraphQLInt },
     volume: { type: GraphQLFloat },
-  }),
-});
-
-const ContractsType = new GraphQLObjectType({
-  name: "contracts",
-  fields: () => ({
-    address: { type: GraphQLString },
-    blockchain: { type: GraphQLString },
-    blockchainId: { type: GraphQLString },
-    decimals: { type: GraphQLInt },
   }),
 });
 
@@ -217,156 +170,13 @@ const swapQuoteType = new GraphQLObjectType({
   }),
 });
 
-const RootQuery = new GraphQLObjectType({
-  name: "RootQueryType",
-  fields: {
-    // ICI All Pairs est une fusion entre All Pairs & Market Pair
-    // Ajout d'address en args, address récup une pair ou un asset ? A voir
-    pairs: {
-      type: new GraphQLList(PairType),
-      args: {
-        blockchain: { type: GraphQLString },
-        asset: { type: GraphQLString },
-        address: { type: GraphQLString },
-        offset: { type: GraphQLInt },
-        stats: { type: GraphQLBoolean },
-      },
-      resolve(parent, args) {
-        if (args.stats) {
-          console.log("Stats are showed");
-          return;
-        }
-        console.log("Stats aren't showed");
-        return;
-      },
-    },
-    // Assets contient Get Market Data + Get Market Data ( batch )
-    // Essayons de fusionner les deux et de gérer le renvoie d'un tableau d'assets ou un asset.
-    assets: {
-      type: new GraphQLList(AssetType),
-      args: {
-        blockchains: { type: new GraphQLList(GraphQLString) },
-        assets: { type: new GraphQLList(GraphQLString) },
-        symbols: { type: new GraphQLList(GraphQLString) },
-      },
-      resolve(parent, args) {
-        if (args.assets?.length > 1) {
-          console.log("Many assets query");
-          return [
-            {
-              marketCap: 0,
-              marketCapDiluted: 0,
-              liquidity: 0,
-              price: 0,
-              offChainVolume: 0,
-              volume: 0,
-              volumeChange24h: 0,
-            },
-          ];
-        }
-        console.log("args: Only one asset called", args, "parent:", parent);
-        return args.address;
-      },
-    },
-    // A test d'ajouter pairTrades dans allPairs => Une variable trades a ajouté dans all Pairs ?
-    // Ca permettrais d'avoir un objet contenant trades, stats suivant un params
-    pairTrades: {
-      type: new GraphQLList(PairTradeType),
-      args: {
-        address: { type: GraphQLString },
-        blockchain: { type: GraphQLString },
-        asset: { type: GraphQLString },
-        amount: { type: GraphQLInt },
-      },
-      resolve(parent, args) {
-        console.log("args:", args, "parent:", parent);
-        return args.address;
-      },
-    },
-    pairHistory: {
-      type: new GraphQLList(pairHistoryType),
-      args: {
-        address: { type: GraphQLString },
-        blockchain: { type: GraphQLString },
-        asset: { type: GraphQLString },
-        from: { type: GraphQLInt },
-        to: { type: GraphQLInt },
-        usd: { type: GraphQLBoolean },
-        period: { type: GraphQLString },
-        amount: { type: GraphQLInt },
-      },
-      resolve(parent, args) {
-        console.log("args:", args, "parent:", parent);
-        return args.address;
-      },
-    },
-    marketHistory: {
-      type: priceHistoryType,
-      args: {
-        asset: { type: GraphQLString },
-        blockchain: { type: GraphQLString },
-        from: { type: GraphQLInt },
-        to: { type: GraphQLInt },
-      },
-      resolve(parent, args) {
-        console.log("args:", args, "parent:", parent);
-        return args.address;
-      },
-    },
-    marketAssetQuery: {
-      type: new GraphQLList(marketAssetQueryType),
-      args: {
-        filters: { type: GraphQLString },
-        sortBy: { type: GraphQLString },
-        sortOrder: { type: GraphQLString },
-      },
-      resolve(parent, args) {
-        return [
-          {
-            id: null,
-            name: null,
-            symbol: null,
-            liquidity: null,
-            market_cap: null,
-            volume: null,
-            price: null,
-            price_change_1h: null,
-            price_change_24h: null,
-            price_change_7d: null,
-            logo: null,
-            contracts: null,
-          },
-        ];
-      },
-    },
-    marketTokenQuery: {
-      type: new GraphQLList(marketTokenQueryType),
-      args: {
-        filters: { type: GraphQLString },
-        sortBy: { type: GraphQLString },
-        sortOrder: { type: GraphQLString },
-      },
-      resolve(parent, args) {
-        console.log("args:", args, "parent:", parent);
-        return args.address;
-      },
-    },
-    swapQuote: {
-      type: swapQuoteType,
-      args: {
-        chain: { type: GraphQLString },
-        receiver: { type: GraphQLString },
-        fromToken: { type: GraphQLString },
-        toToken: { type: GraphQLString },
-        fromAddress: { type: GraphQLString },
-        amount: { type: GraphQLFloat },
-        slippage: { type: GraphQLFloat },
-        type: { type: GraphQLString }, // A vérifier voir comment on fais ( should be enum )
-      },
-    },
-  },
-});
-
-module.exports = new GraphQLSchema({
-  query: RootQuery,
-});
+module.exports = {
+  PairTokenType,
+  PairType,
+  PairTradeType,
+  priceHistoryType,
+  pairHistoryType,
+  marketAssetQueryType,
+  marketTokenQueryType,
+  swapQuoteType,
+};

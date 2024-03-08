@@ -1,6 +1,6 @@
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
-const schema = require("./schema/wallet-explorer/pairs");
+const schema = require("./schema/index");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
