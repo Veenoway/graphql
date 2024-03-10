@@ -10,14 +10,10 @@ const mongoURI = process.env.MONGODB_CONNECTOR_URI;
 mongoose.connect(mongoURI);
 mongoose.connection.once("open", () => {
   console.log("MongoDB connection has been initialised");
-  console.log(
-    "tolowercase:",
-    "0x77A89C51f106D6cD547542a3A83FE73cB4459135".toLowerCase()
-  );
 });
 
 app.use(
-  "/graphql/pairs",
+  "/graphql",
   graphqlHTTP({
     schema,
     graphiql: true,
