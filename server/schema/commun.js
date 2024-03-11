@@ -7,6 +7,7 @@ const {
   GraphQLList,
   GraphQLID,
 } = require("graphql");
+const { PairType } = require("./octopus");
 
 const HistoryPointType = new GraphQLObjectType({
   name: "MarketHistoryPoint",
@@ -23,6 +24,15 @@ const ContractsType = new GraphQLObjectType({
     blockchain: { type: GraphQLString },
     blockchainId: { type: GraphQLString },
     decimals: { type: GraphQLInt },
+  }),
+});
+
+const PlateFormType = new GraphQLObjectType({
+  name: "platform",
+  fields: () => ({
+    name: { type: GraphQLString },
+    rank: { type: GraphQLInt },
+    weight: { type: GraphQLInt },
   }),
 });
 
@@ -50,6 +60,13 @@ const AssetType = new GraphQLObjectType({
     name: { type: GraphQLString },
     symbol: { type: GraphQLString },
     contracts: { type: new GraphQLList(ContractsType) },
+    decimals: { type: new GraphQLList(GraphQLInt) },
+    type: { type: GraphQLString },
+    website: { type: GraphQLString },
+    pairs: { type: new GraphQLList(PairType) },
+    trendingScore: { type: GraphQLInt },
+    platforms: { type: new GraphQLList(PlateFormType) },
+    trending: { type: GraphQLBoolean }, // Adding a trending field instead of get meta trending
     // Above Octopus query Asset
     // Under Get Crypto Holdings ( Wallet Explorer API )
     // Could be great to have a params who handle what we return

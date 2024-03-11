@@ -83,6 +83,12 @@ const RootQueryType = new GraphQLObjectType({
         return args.address;
       },
     },
+    allAssets: {
+      type: new GraphQLList(AssetType),
+      resolve(parent, args) {
+        return;
+      },
+    },
     // A test d'ajouter pairTrades dans allPairs => Une variable trades a ajouté dans all Pairs ?
     // Ca permettrais d'avoir un objet contenant trades, stats suivant un params
     nfts: {
