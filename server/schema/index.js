@@ -36,6 +36,11 @@ const RootQueryType = new GraphQLObjectType({
         address: { type: GraphQLString },
         offset: { type: GraphQLInt },
         stats: { type: GraphQLBoolean },
+        pairAmount: { type: GraphQLInt },
+        from: { type: GraphQLInt },
+        to: { type: GraphQLInt },
+        usd: { type: GraphQLBoolean },
+        period: { type: GraphQLString },
       },
       resolve(parent, args) {
         if (args.stats) {
@@ -52,8 +57,12 @@ const RootQueryType = new GraphQLObjectType({
       type: new GraphQLList(AssetType),
       args: {
         blockchains: { type: new GraphQLList(GraphQLString) },
+        asset: { type: GraphQLString },
         assets: { type: new GraphQLList(GraphQLString) },
         symbols: { type: new GraphQLList(GraphQLString) },
+        filters: { type: GraphQLString },
+        sortBy: { type: GraphQLString },
+        sortOrder: { type: GraphQLString },
       },
       resolve(parent, args) {
         if (args.assets?.length > 1) {
@@ -76,100 +85,6 @@ const RootQueryType = new GraphQLObjectType({
     },
     // A test d'ajouter pairTrades dans allPairs => Une variable trades a ajouté dans all Pairs ?
     // Ca permettrais d'avoir un objet contenant trades, stats suivant un params
-    pairTrades: {
-      type: new GraphQLList(PairTradeType),
-      args: {
-        address: { type: GraphQLString },
-        blockchain: { type: GraphQLString },
-        asset: { type: GraphQLString },
-        amount: { type: GraphQLInt },
-      },
-      resolve(parent, args) {
-        console.log("args:", args, "parent:", parent);
-        return args.address;
-      },
-    },
-    pairHistory: {
-      type: new GraphQLList(pairHistoryType),
-      args: {
-        address: { type: GraphQLString },
-        blockchain: { type: GraphQLString },
-        asset: { type: GraphQLString },
-        from: { type: GraphQLInt },
-        to: { type: GraphQLInt },
-        usd: { type: GraphQLBoolean },
-        period: { type: GraphQLString },
-        amount: { type: GraphQLInt },
-      },
-      resolve(parent, args) {
-        console.log("args:", args, "parent:", parent);
-        return args.address;
-      },
-    },
-    marketHistory: {
-      type: priceHistoryType,
-      args: {
-        asset: { type: GraphQLString },
-        blockchain: { type: GraphQLString },
-        from: { type: GraphQLInt },
-        to: { type: GraphQLInt },
-      },
-      resolve(parent, args) {
-        console.log("args:", args, "parent:", parent);
-        return args.address;
-      },
-    },
-    marketAssetQuery: {
-      type: new GraphQLList(marketAssetQueryType),
-      args: {
-        filters: { type: GraphQLString },
-        sortBy: { type: GraphQLString },
-        sortOrder: { type: GraphQLString },
-      },
-      resolve(parent, args) {
-        return [
-          {
-            id: null,
-            name: null,
-            symbol: null,
-            liquidity: null,
-            market_cap: null,
-            volume: null,
-            price: null,
-            price_change_1h: null,
-            price_change_24h: null,
-            price_change_7d: null,
-            logo: null,
-            contracts: null,
-          },
-        ];
-      },
-    },
-    marketTokenQuery: {
-      type: new GraphQLList(marketTokenQueryType),
-      args: {
-        filters: { type: GraphQLString },
-        sortBy: { type: GraphQLString },
-        sortOrder: { type: GraphQLString },
-      },
-      resolve(parent, args) {
-        console.log("args:", args, "parent:", parent);
-        return args.address;
-      },
-    },
-    swapQuote: {
-      type: swapQuoteType,
-      args: {
-        chain: { type: GraphQLString },
-        receiver: { type: GraphQLString },
-        fromToken: { type: GraphQLString },
-        toToken: { type: GraphQLString },
-        fromAddress: { type: GraphQLString },
-        amount: { type: GraphQLFloat },
-        slippage: { type: GraphQLFloat },
-        type: { type: GraphQLString }, // A vérifier voir comment on fais ( should be enum )
-      },
-    },
     nfts: {
       type: new GraphQLList(NFTType),
       args: {

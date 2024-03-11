@@ -66,6 +66,7 @@ const AssetType = new GraphQLObjectType({
     totalSupply: { type: GraphQLFloat },
     totalSupplyAddresses: { type: new GraphQLList(GraphQLString) },
     twitter: { type: GraphQLString },
+    history: { type: new GraphQLList(HistoryPointType) }, // Ajout d'history
   }),
 });
 

@@ -12,14 +12,11 @@ const { HistoryPointType, ContractsType } = require("./commun");
 const PairTokenType = new GraphQLObjectType({
   name: "pairToken",
   fields: () => ({
+    ...AssetType.getFields(),
     address: { type: GraphQLString },
     decimals: { type: GraphQLInt },
     id: { type: GraphQLID },
-    logo: { type: GraphQLString },
-    name: { type: GraphQLString },
-    price: { type: GraphQLFloat },
     priceToken: { type: GraphQLFloat },
-    symbol: { type: GraphQLString },
     totalSupply: { type: GraphQLFloat },
     circulatingSupply: { type: GraphQLFloat },
     priceTokenString: { type: GraphQLString },
@@ -32,8 +29,8 @@ const PairTokenType = new GraphQLObjectType({
 const PairType = new GraphQLObjectType({
   name: "pairMarket",
   fields: () => ({
-    token0: { type: PairTokenType },
-    token1: { type: PairTokenType },
+    token0: { type: AssetType },
+    token1: { type: AssetType },
     volume24h: { type: GraphQLFloat },
     liquidity: { type: GraphQLFloat },
     blockchain: { type: GraphQLString },
@@ -79,6 +76,8 @@ const PairType = new GraphQLObjectType({
     volume24h: { type: GraphQLFloat },
     buyVolume24h: { type: GraphQLFloat },
     sellVolume24h: { type: GraphQLFloat },
+    trades: { type: new GraphQLList(PairTradeType) },
+    history: { type: new GraphQLList(pairHistoryType) },
   }),
 });
 
@@ -158,18 +157,6 @@ const txSwapQuoteType = new GraphQLObjectType({
   }),
 });
 
-const swapQuoteType = new GraphQLObjectType({
-  name: "swapQuote",
-  fields: () => ({
-    amountOut: { type: GraphQLString },
-    error: { type: GraphQLString },
-    isAggregator: { type: GraphQLBoolean },
-    protocol: { type: GraphQLString },
-    tx: { type: txSwapQuoteType },
-    willFail: { type: GraphQLBoolean },
-  }),
-});
-
 module.exports = {
   PairTokenType,
   PairType,
@@ -178,5 +165,4 @@ module.exports = {
   pairHistoryType,
   marketAssetQueryType,
   marketTokenQueryType,
-  swapQuoteType,
 };
