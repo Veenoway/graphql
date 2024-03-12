@@ -8,20 +8,8 @@ const {
   GraphQLSchema,
 } = require("graphql");
 const { AssetType } = require("./commun");
-const {
-  PairTradeType,
-  PairType,
-  marketAssetQueryType,
-  marketTokenQueryType,
-  pairHistoryType,
-  priceHistoryType,
-  swapQuoteType,
-} = require("./octopus");
-const {
-  HistoricalNetWorthType,
-  NFTType,
-  PortfolioType,
-} = require("./wallet-explorer");
+const { PairType } = require("./octopus");
+const { TransactionType, NFTType, WalletType } = require("./wallet-explorer");
 
 const RootQueryType = new GraphQLObjectType({
   name: "RootQuery",
@@ -51,8 +39,7 @@ const RootQueryType = new GraphQLObjectType({
         return;
       },
     },
-    // Assets contient Get Market Data + Get Market Data ( batch )
-    // Essayons de fusionner les deux et de gérer le renvoie d'un tableau d'assets ou un asset.
+    // Ne pas mettre d'args === allAssets
     assets: {
       type: new GraphQLList(AssetType),
       args: {
@@ -83,14 +70,6 @@ const RootQueryType = new GraphQLObjectType({
         return args.address;
       },
     },
-    allAssets: {
-      type: new GraphQLList(AssetType),
-      resolve(parent, args) {
-        return;
-      },
-    },
-    // A test d'ajouter pairTrades dans allPairs => Une variable trades a ajouté dans all Pairs ?
-    // Ca permettrais d'avoir un objet contenant trades, stats suivant un params
     nfts: {
       type: new GraphQLList(NFTType),
       args: {
@@ -102,23 +81,48 @@ const RootQueryType = new GraphQLObjectType({
         return _.find(nfts, { tokenId: args.tokenId });
       },
     },
-    historicalNetWorthType: {
-      type: HistoricalNetWorthType,
+    trades: {
+      type: new GraphQLList(PairTradeType),
       args: {
-        // ICI normalement on a wallet, removed and use wallets instead
-        wallets: { type: new GraphQLList(GraphQLString) },
-        blockchains: { type: new GraphQLList(GraphQLString) },
-        from: { type: GraphQLInt },
-        to: { type: GraphQLInt },
+        address: { type: GraphQLString },
+        amount: { type: GraphQLInt },
+        asset: { type: GraphQLString },
+        blockchain: { type: GraphQLString },
       },
       resolve(parent, args) {
-        return args.wallets[0];
+        return;
       },
     },
-    portfolio: {
-      type: PortfolioType,
+    transactions: {
+      type: new GraphQLList(TransactionType),
       args: {
-        // Suppression de wallet et ajout de wallets
+        wallet: { type: GraphQLString },
+        blockchains: { type: new GraphQLList(GraphQLString) },
+        wallets: { type: new GraphQLList(GraphQLString) },
+        from: { type: GraphQLInt },
+        to: { type: GraphQLInt },
+        limit: { type: GraphQLInt },
+        offset: { type: GraphQLInt },
+        order: { type: GraphQLBoolean },
+        asset: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        return;
+      },
+    },
+    search: {
+      type: new GraphQLList(AssetType),
+      args: {
+        query: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        return;
+      },
+    },
+    wallet: {
+      type: WalletType,
+      args: {
+        wallet: { type: GraphQLString },
         wallets: { type: new GraphQLList(GraphQLString) },
         blockchains: { type: new GraphQLList(GraphQLString) },
         cache: { type: GraphQLBoolean },

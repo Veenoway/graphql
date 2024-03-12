@@ -60,7 +60,7 @@ const ContractsBalanceType = new GraphQLObjectType({
   }),
 });
 
-const PortfolioAssetType = new GraphQLObjectType({
+const WalletAssetType = new GraphQLObjectType({
   name: "PortfolioAsset",
   fields: () => ({
     asset: { type: AssetType },
@@ -81,15 +81,50 @@ const PortfolioAssetType = new GraphQLObjectType({
   }),
 });
 
-const PortfolioType = new GraphQLObjectType({
-  name: "portfolio",
+const WalletType = new GraphQLObjectType({
+  name: "wallet",
   fields: () => ({
-    assets: { type: new GraphQLList(PortfolioAssetType) }, // Change wallet to wallets
+    assets: { type: new GraphQLList(WalletAssetType) }, // Change wallet to wallets
     totalWalletBalance: { type: GraphQLFloat },
     wallet: { type: GraphQLString },
     totalRealizedPNL: { type: GraphQLFloat },
     totalUnrealizedPNL: { type: GraphQLFloat },
+    balanceHistory: { type: new GraphQLList(HistoryPointType) },
   }),
 });
 
-module.exports = { NFTType, HistoricalNetWorthType, PortfolioType };
+const TxType = new GraphQLObjectType({
+  name: "tx",
+  fields: () => ({
+    timestamp: { type: GraphQLFloat },
+    asset: { type: AssetType },
+    type: { type: GraphQLString },
+    methodId: { type: GraphQLString },
+    hash: { type: GraphQLString },
+    blockchain: { type: GraphQLString },
+    amount: { type: GraphQLFloat },
+    amount_usd: { type: GraphQLFloat },
+    to: { type: GraphQLString },
+    from: { type: GraphQLString },
+  }),
+});
+
+const TransactionType = new GraphQLObjectType({
+  name: "transactions",
+  fields: () => ({
+    wallet: { type: GraphQLString },
+    limit: { type: GraphQLInt },
+    offset: { type: GraphQLInt },
+    page: { type: GraphQLInt },
+    total: { type: GraphQLInt },
+    lastUpdated: { type: GraphQLInt },
+    transactions: { type: new GraphQLList(TxType) },
+  }),
+});
+
+module.exports = {
+  NFTType,
+  HistoricalNetWorthType,
+  WalletType,
+  TransactionType,
+};

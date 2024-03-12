@@ -147,16 +147,6 @@ const marketTokenQueryType = new GraphQLObjectType({
   }),
 });
 
-const txSwapQuoteType = new GraphQLObjectType({
-  name: "txSwapQuote",
-  fields: () => ({
-    data: { type: GraphQLString },
-    from: { type: GraphQLString },
-    to: { type: GraphQLString },
-    value: { type: GraphQLString },
-  }),
-});
-
 module.exports = {
   PairTokenType,
   PairType,
