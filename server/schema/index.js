@@ -14,8 +14,6 @@ const { TransactionType, NFTType, WalletType } = require("./wallet-explorer");
 const RootQueryType = new GraphQLObjectType({
   name: "RootQuery",
   fields: {
-    // ICI All Pairs est une fusion entre All Pairs & Market Pair
-    // Ajout d'address en args, address récup une pair ou un asset ? A voir
     pairs: {
       type: new GraphQLList(PairType),
       args: {
@@ -50,6 +48,7 @@ const RootQueryType = new GraphQLObjectType({
         filters: { type: GraphQLString },
         sortBy: { type: GraphQLString },
         sortOrder: { type: GraphQLString },
+        trending: { type: GraphQLBoolean },
       },
       resolve(parent, args) {
         if (args.assets?.length > 1) {

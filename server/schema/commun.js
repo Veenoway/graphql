@@ -67,7 +67,6 @@ const AssetType = new GraphQLObjectType({
     trendingScore: { type: GraphQLInt },
     platforms: { type: new GraphQLList(PlateFormType) },
     trending: { type: GraphQLBoolean }, // Adding a trending field instead of get meta trending
-    // Above Octopus query Asset
     // Under Get Crypto Holdings ( Wallet Explorer API )
     // Could be great to have a params who handle what we return
     audit: { type: GraphQLString },
