@@ -66,7 +66,7 @@ const AssetType = new GraphQLObjectType({
     pairs: { type: new GraphQLList(PairType) },
     trendingScore: { type: GraphQLInt },
     platforms: { type: new GraphQLList(PlateFormType) },
-    trending: { type: GraphQLBoolean }, // Adding a trending field instead of get meta trending
+    trending: { type: GraphQLBoolean },
     // Under Get Crypto Holdings ( Wallet Explorer API )
     // Could be great to have a params who handle what we return
     audit: { type: GraphQLString },
