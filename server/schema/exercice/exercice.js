@@ -47,13 +47,6 @@ var assets = [
     blockchain: ["Avalanche", "Cardano", "Ethereum"],
     price: 45,
   },
-  {
-    name: "Cardano",
-    symbol: "ADA",
-    id: "6",
-    blockchain: ["Cardano"],
-    price: 0.6,
-  },
 ];
 
 var blockchains = [
