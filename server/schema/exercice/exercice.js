@@ -52,7 +52,6 @@ var assets = [
 var blockchains = [
   { name: "Ethereum", id: "1" },
   { name: "Avalanche", id: "2" },
-  { name: "Cardano", id: "3" },
 ];
 
 const BlockchainType = new GraphQLObjectType({
